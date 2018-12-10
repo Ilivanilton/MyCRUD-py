@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block body %}
+<div class="col-lg-12">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<strong>Todos os Perfis</strong>
+			{% if perfis %}
+			<ul>
+				{% for perfil in perfis %}
+				<li><a href="{% url 'exibir' perfil.id %}">{{ perfil.nome }}</a></li>
+				{% endfor %}
+			</ul>
+			{% else %}
+			<p>Nenhum perfil encontrado</p>
+			{% endif %}
+		</div>
+	</div>
+	<div class="panel panel-default">
+	{% with total_de_convites=perfil_logado.convites_recebidos.count %}
+	{% if total_de_convites %}
+		<div class="panel-heading">
+			<strong>
+				Você tem {{total_de_convites}} 
+				convite{{total_de_convites |pluralize}} aguardando sua aprovação
+			</strong>
+		</div>
+		<ul class="list-group">
+			{% for convite in perfil_logado.convites_recebidos.all %}
+			<li class="list-group-item">
+			{{ convite.solicitante.nome }}
+			<div class="pull-right">
+				<a href="{% url 'aceitar' convite.id %}" class="pull-left">aceitar</a>
+				<span> | </span>
+				<a href="{% url 'regeitar' convite.id %}" class="pull-right">regeitar</a>
+			</div>
+			</li>
+			{% endfor %}
+		</ul>
+	{% else %}
+		<div class="panel-body">
+			<strong>sem convites</strong>
+		</div>
+	{% endif %}
+	{% endwith %}
+	</div>
+
+	<div class="panel panel-default">
+	{% with total_de_contatos=perfil_logado.contatos.count %}
+	{% if total_de_contatos %}
+		<div class="panel-heading">
+			<strong>
+				Você tem {{total_de_contatos}} 
+				contato{{total_de_contatos |pluralize}}
+			</strong>
+		</div>
+		<ul class="list-group">
+			{% for contato in perfil_logado.contatos.all %}
+			<li class="list-group-item">
+				<a href="{% url 'exibir' contato.id %}">{{ contato.nome }}</a>
+				<a href="{% url 'remover_contato' contato.id %}" class="pull-right">remover</a>
+			</li>
+			{% endfor %}
+		</ul>
+	{% else %}
+		<div class="panel-body">
+			<strong>sem contatos</strong>
+		</div>
+	{% endif %}
+	{% endwith %}
+	</div>
+
+</div>
+{% endblock %}
